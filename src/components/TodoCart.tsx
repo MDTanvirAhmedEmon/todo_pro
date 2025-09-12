@@ -1,9 +1,12 @@
 import { useState } from "react";
 import type { ITodo } from "../global/todoType";
+import EditTodoForm from "./EditTodoForm";
 
 const TodoCart = ({ todo }: { todo: ITodo }) => {
 
+    const [selectedTodo, setSelectedTodo] = useState<ITodo>()
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+    const [showEditForm, setShowEditForm] = useState(false)
 
     const getPriorityColor = (priority?: ITodo["priority"]) => {
         switch (priority) {
@@ -29,6 +32,11 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
         }
     };
 
+    const handelEdit = (todo: ITodo) =>{
+        setSelectedTodo(todo)
+        setShowEditForm(true)
+    }
+
     return (
         <div className="mb-8">
             <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
@@ -42,7 +50,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                         {todo?.title}
                     </h3>
                     <div className="flex items-center gap-2 ml-4">
-                        <button className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm transition-colors">
+                        <button  onClick={() => handelEdit(todo)} className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm transition-colors">
                             Edit
                         </button>
                         <button onClick={() => setShowDeleteConfirm(true)} className="text-red-600 cursor-pointer hover:text-red-700 text-sm transition-colors">
@@ -142,6 +150,10 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                         </div>
                     </div>
                 </div>
+            }
+            {
+                showEditForm &&
+                <EditTodoForm setShowEditForm={setShowEditForm} selectedTodo={selectedTodo}></EditTodoForm>
             }
         </div >
     );
