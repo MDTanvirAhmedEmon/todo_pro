@@ -1,3 +1,4 @@
+import CreateNewTodo from "../../components/CreateNewTodo";
 import TodoCart from "../../components/TodoCart";
 import type { ITodo } from "../../global/todoType";
 
@@ -150,25 +151,13 @@ const Home = () => {
                 </div>
             </section>
 
-            <section className="bg-white border border-gray-200 rounded-lg px-4 py-6 space-y-4 shadow-sm mt-8">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 ">
-                    <h2 className="text-lg font-medium text-purple-600">
-                        Create New Todo
-                    </h2>
-                    <button
-                        className="bg-purple-600 cursor-pointer text-white px-4 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors w-full sm:w-auto"
-                        aria-controls="todo-form"
-                    >
-                        Add Todo
-                    </button>
-                </div>
-            </section>
+            <CreateNewTodo></CreateNewTodo>
 
             <section className="pt-8">
 
                 {
                     todos?.map((todo: ITodo) =>
-                    <TodoCart key={todo?.id} todo={todo} ></TodoCart>
+                        <TodoCart key={todo?.id} todo={todo} ></TodoCart>
                     )
                 }
 
