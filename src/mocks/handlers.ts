@@ -14,20 +14,30 @@ type Todo = {
   tags?: string[];
   dueDate?: string | null;
   createdAt: string;
-  updatedAt?: string;
+  updatedAt: string;
 };
+function loadFromStorage<T>(key: string, fallback: T): T {
+  const data = localStorage.getItem(key);
+  return data ? JSON.parse(data) : fallback;
+}
 
-const users: User[] = [];
-const tokens: TokenInfo[] = [];
-const todos: Todo[] = [];
+function saveToStorage<T>(key: string, data: T) {
+  localStorage.setItem(key, JSON.stringify(data));
+}
+
+const users: User[] = loadFromStorage("mock_users", []);
+const tokens: TokenInfo[] = loadFromStorage("mock_tokens", []);
+const todos: Todo[] = loadFromStorage("mock_todos", []);
+
 
 // Helpers
-const randomFailure = (failureRate = 0.12) => Math.random() < failureRate;
+const randomFailure = (failureRate = 0.60) => Math.random() < failureRate;
 
 function createToken(userId: string, ttlMs = 1000 * 60 * 60) {
   const token = uuid();
   const expiresAt = Date.now() + ttlMs;
   tokens.push({ token, userId, expiresAt });
+  saveToStorage("mock_tokens", tokens);
   return { token, expiresAt };
 }
 
@@ -60,6 +70,7 @@ export const handlers = [
 
     const newUser: User = { id: uuid(), name, email, password };
     users.push(newUser);
+    saveToStorage("mock_users", users);
 
     const { token, expiresAt } = createToken(newUser.id);
 
@@ -83,10 +94,10 @@ export const handlers = [
   ,
 
   // GET TODOS
-  http.get("/todos", (req:any) => {
+  http.get("/todos", (req: any) => {
     const user = findUserByToken(req);
     if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
-    if (randomFailure(0.05)) return HttpResponse.json({ message: "Random failure" }, { status: 500 });
+    // if (randomFailure(0.05)) return HttpResponse.json({ message: "Random failure" }, { status: 500 });
 
     const search = req.url.searchParams.get("search") || "";
     const status = req.url.searchParams.get("status") || "";
@@ -130,12 +141,13 @@ export const handlers = [
   }),
 
   // CREATE TODO
-  http.post("/todos", (req:any) => {
-    const user = findUserByToken(req);
+  http.post("/todos", async ({ request }) => {
+    // const requestBody = await request.json() as { email: string; password: string };
+    const user = findUserByToken(request);
     if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const body = req.body as Partial<Todo>;
-    if (randomFailure(0.07)) return HttpResponse.json({ message: "Failed to create todo" }, { status: 400 });
+    const body = await request.json() as Partial<Todo>;
+    // if (randomFailure(0.50)) return HttpResponse.json({ message: "Failed to create todo" }, { status: 400 });
 
     const newTodo: Todo = {
       id: uuid(),
@@ -147,14 +159,16 @@ export const handlers = [
       tags: body.tags || [],
       dueDate: body.dueDate || null,
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     todos.push(newTodo);
+    saveToStorage("mock_todos", todos);
     return HttpResponse.json(newTodo, { status: 201 });
   }),
 
   // PATCH TODO
-  http.patch("/todos/:id", (req:any) => {
+  http.patch("/todos/:id", (req: any) => {
     const user = findUserByToken(req);
     if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
 

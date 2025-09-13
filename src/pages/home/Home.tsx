@@ -86,9 +86,6 @@ const Home = () => {
                     <h3 className="text-lg font-medium text-gray-900">Filter & Search</h3>
                     <div className="text-sm text-gray-500">
                         Showing 8 of 8 todos
-                        <button className="ml-2 text-purple-600 hover:underline">
-                            Clear filters
-                        </button>
                     </div>
                 </div>
 

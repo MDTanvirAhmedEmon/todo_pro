@@ -4,12 +4,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RxCross2 } from "react-icons/rx";
 import { todoSchema } from "../zod/schema";
+import { useCreateTodoMutation } from "../redux/features/todos/todosApi";
+import toast, { Toaster } from "react-hot-toast";
 
 type TodoFormValues = z.infer<typeof todoSchema>;
 
 const CreateNewTodo = () => {
     const [showCreateForm, setShowCreateForm] = useState(false)
-
+    const [createTodo, { isLoading }] = useCreateTodoMutation()
     const {
         register,
         handleSubmit,
@@ -27,12 +29,23 @@ const CreateNewTodo = () => {
                 : [],
         };
         console.log("Form Data:", formattedData);
-        reset();
-        setShowCreateForm(false);
+
+        createTodo(formattedData).unwrap()
+            .then(() => {
+                toast.success("Todo Created Successfully")
+                reset();
+                setShowCreateForm(false);
+            })
+            .catch((error) => {
+                toast.error(error?.data?.message)
+            })
+
+
     };
 
     return (
         <section className="bg-white border border-gray-200 rounded-lg px-4 py-6 space-y-4 shadow-sm mt-8">
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <h2 className="text-lg font-medium text-purple-600">Create New Todo</h2>
                 <button
@@ -192,9 +205,10 @@ const CreateNewTodo = () => {
                             <div className="flex gap-2 pt-2">
                                 <button
                                     type="submit"
+                                    disabled={isLoading}
                                     className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
                                 >
-                                    Create Todo
+                                    {isLoading ? "loading..." : "Create Todo"}
                                 </button>
                             </div>
                         </form>
