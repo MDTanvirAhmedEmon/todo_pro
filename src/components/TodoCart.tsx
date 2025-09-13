@@ -2,7 +2,8 @@ import { useState } from "react";
 import type { ITodo } from "../global/todoType";
 import EditTodoForm from "./EditTodoForm";
 import { useDeleteTodoMutation } from "../redux/features/todos/todosApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const TodoCart = ({ todo }: { todo: ITodo }) => {
     const [selectedTodo, setSelectedTodo] = useState<ITodo>()
@@ -54,7 +55,6 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
     return (
         <div className="mb-8">
             <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-grab">
-                <Toaster position="top-center" reverseOrder={false} />
                 <div className="flex items-start justify-between mb-2">
                     <h3
                         className={`font-medium ${todo?.status === "done"
@@ -95,7 +95,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                             : "text-gray-600"
                             }`}
                     >
-                        {todo?.description}
+                        {todo?.description?.slice(0, 45)}{todo?.description && todo.description.length > 100 ? "..." : ""}
                     </p>
                 )}
 
@@ -127,27 +127,35 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                         </span>
                     )}
                 </div>
-
-                {todo?.tags && todo?.tags?.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-2">
-                        {todo?.tags?.map((tag: string, index: number) => (
-                            <span
-                                key={index}
-                                className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full border border-purple-200"
-                            >
-                                {tag}
-                            </span>
-                        ))}
-                    </div>
-                )}
-
-                <div className="text-xs text-gray-500">
-                    Created: {new Date(todo?.createdAt).toLocaleDateString()}
-                    {todo?.updatedAt !== todo?.createdAt && (
-                        <span className="ml-2">
-                            Updated: {new Date(todo?.updatedAt).toLocaleDateString()}
-                        </span>
+                <div>
+                    {todo?.tags && todo?.tags?.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-2">
+                            {todo?.tags?.map((tag: string, index: number) => (
+                                <span
+                                    key={index}
+                                    className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full border border-purple-200"
+                                >
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
                     )}
+
+                    <div className="text-xs text-gray-500">
+                        Created: {new Date(todo?.createdAt).toLocaleDateString()}
+                        {todo?.updatedAt !== todo?.createdAt && (
+                            <span className="ml-2">
+                                Updated: {new Date(todo?.updatedAt).toLocaleDateString()}
+                            </span>
+                        )}
+                    </div>
+                    <Link to={`/app/todos/${todo.id}`}>
+                        <button
+                            className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm transition-colors mt-3"
+                        >
+                            View Details
+                        </button>
+                    </Link>
                 </div>
             </div>
             {showDeleteConfirm &&

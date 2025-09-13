@@ -6,7 +6,7 @@ import type { ITodo } from "../global/todoType";
 import type { Dispatch, SetStateAction } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useUpdateTodoMutation } from "../redux/features/todos/todosApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type TodoFormValues = z.infer<typeof todoSchema>;
 interface EditTodoFormProps {
@@ -55,7 +55,6 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
     };
     return (
         <div className="fixed inset-0 bg-black/50 flex items-start md:items-center justify-center z-50 overflow-auto py-8">
-            <Toaster position="top-center" reverseOrder={false} />
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mx-4 w-full max-w-lg animate-in zoom-in-95">
                 <div className="text-black flex justify-end">
                     <RxCross2

@@ -35,7 +35,7 @@ const DragBoard = ({ todos }: Props) => {
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
-                distance: 8, // user must move 8px before drag starts
+                distance: 5, // user must move 5px before drag starts
             },
         })
     );

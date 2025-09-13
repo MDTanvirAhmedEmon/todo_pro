@@ -4,6 +4,7 @@ import Login from '../pages/auth/login';
 import Register from '../pages/auth/register';
 import Home from '../pages/home/Home';
 import PrivateRoute from './PrivateRoute';
+import SingleTodo from '../pages/singleTodo/SingleTodo';
 
 const router = createBrowserRouter([
     {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
             {
                 path: "/app/todos",
                 element: <Home></Home>,
+            },
+            {
+                path: "/app/todos/:id",
+                element: <SingleTodo></SingleTodo>,
             },
         ]
     },

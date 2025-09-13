@@ -46,19 +46,19 @@ const Home = () => {
                     <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm">
                         <h3 className="text-xs sm:text-sm font-medium text-gray-500">To Do</h3>
                         <p className="text-xl sm:text-2xl font-bold text-purple-600">
-                            {todos.filter((t) => t.status === "todo").length}
+                            {data?.stats?.todo}
                         </p>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm">
                         <h3 className="text-xs sm:text-sm font-medium text-gray-500">In Progress</h3>
                         <p className="text-xl sm:text-2xl font-bold text-purple-600">
-                            {todos.filter((t) => t.status === "in_progress").length}
+                            {data?.stats?.in_progress}
                         </p>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm">
                         <h3 className="text-xs sm:text-sm font-medium text-gray-500">Completed</h3>
                         <p className="text-xl sm:text-2xl font-bold text-purple-600">
-                            {todos.filter((t) => t.status === "done").length}
+                            {data?.stats?.done}
                         </p>
                     </div>
                 </div>
@@ -162,7 +162,7 @@ const Home = () => {
                     </div>
                 ) : todos && todos.length > 0 ? (
                     // todos.map((todo: ITodo) => <TodoCart key={todo.id} todo={todo} />) // without drag
-                     <DragBoard todos={todos} />
+                    <DragBoard todos={todos} />
                 ) : (
                     <div className="flex flex-col items-center justify-center py-12 text-center bg-white border border-gray-200 rounded-lg shadow-sm">
                         <svg

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RxCross2 } from "react-icons/rx";
 import { todoSchema } from "../zod/schema";
 import { useCreateTodoMutation } from "../redux/features/todos/todosApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type TodoFormValues = z.infer<typeof todoSchema>;
 
@@ -43,7 +43,6 @@ const CreateNewTodo = () => {
 
     return (
         <section className="bg-white border border-gray-200 rounded-lg px-4 py-6 space-y-4 shadow-sm mt-8">
-            <Toaster position="top-center" reverseOrder={false} />
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <h2 className="text-lg font-medium text-purple-600">Create New Todo</h2>
                 <button

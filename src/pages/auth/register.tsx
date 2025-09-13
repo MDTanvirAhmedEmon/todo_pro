@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUserMutation } from "../../redux/features/auth/authApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/features/auth/authSlice";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type RegisterFormData = z.infer<typeof registerSchema>
 const Register = () => {
@@ -44,7 +44,6 @@ const Register = () => {
 
     return (
         <div className="h-screen flex items-center justify-center">
-            <Toaster position="top-center" reverseOrder={false} />
             <div className="w-[500px] px-8 py-12 bg-white rounded-2xl shadow-2xl border border-gray-200">
                 <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Sign Up</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
