@@ -14,7 +14,15 @@ const Login: React.FC = () => {
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        console.log(data);
+        // console.log(data)
+        fetch("/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: data.email, password: data.password }),
+        });
+
     };
 
     return (
