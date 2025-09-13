@@ -39,8 +39,6 @@ const CreateNewTodo = () => {
             .catch((error) => {
                 toast.error(error?.data?.message)
             })
-
-
     };
 
     return (

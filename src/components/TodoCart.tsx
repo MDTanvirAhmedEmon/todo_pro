@@ -53,7 +53,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
 
     return (
         <div className="mb-8">
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
+            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-grab">
                 <Toaster position="top-center" reverseOrder={false} />
                 <div className="flex items-start justify-between mb-2">
                     <h3
@@ -65,13 +65,27 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                         {todo?.title}
                     </h3>
                     <div className="flex items-center gap-2 ml-4">
-                        <button onClick={() => handelEdit(todo)} className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm transition-colors">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation(); // stop drag from interfering
+                                handelEdit(todo);
+                            }}
+                            className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm transition-colors"
+                        >
                             Edit
                         </button>
-                        <button onClick={() => setShowDeleteConfirm(true)} className="text-red-600 cursor-pointer hover:text-red-700 text-sm transition-colors">
+
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation(); // stop drag from interfering
+                                setShowDeleteConfirm(true);
+                            }}
+                            className="text-red-600 cursor-pointer hover:text-red-700 text-sm transition-colors"
+                        >
                             Delete
                         </button>
                     </div>
+
                 </div>
 
                 {todo?.description && (
@@ -86,19 +100,15 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                 )}
 
                 <div className="flex flex-wrap items-center gap-2 mb-3">
-                    <div className="relative">
-                        <select
-                            value={todo?.status}
+                    <div className="">
+                        <span
                             className={`text-xs px-2 py-1 rounded-full border cursor-pointer ${getStatusColor(
                                 todo.status
                             )} focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`}
                         >
-                            <option value="todo">To Do</option>
-                            <option value="in_progress">In Progress</option>
-                            <option value="done">Done</option>
-                        </select>
+                            {todo?.status}
+                        </span>
                     </div>
-
                     {todo?.priority && (
                         <span
                             className={`text-xs px-2 py-1 rounded-full border ${getPriorityColor(

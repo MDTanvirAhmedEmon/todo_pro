@@ -25,7 +25,7 @@ const Login: React.FC = () => {
             .then((data) => {
                 dispatch(setUser({ user: data?.user, accessToken: data?.token }))
                 toast.success("Log In Successfully")
-                navigate(`/`)
+                navigate(`/app/todos`)
             })
             .catch((error) => {
                 toast.error(error?.data?.message)
