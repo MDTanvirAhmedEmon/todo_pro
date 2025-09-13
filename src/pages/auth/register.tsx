@@ -2,24 +2,49 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { z } from "zod"
 import { registerSchema } from "../../zod/schema";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useRegisterUserMutation } from "../../redux/features/auth/authApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/features/auth/authSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 type RegisterFormData = z.infer<typeof registerSchema>
 const Register = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting }
+        formState: { errors }
     } = useForm<RegisterFormData>({
         resolver: zodResolver(registerSchema)
     })
 
+    const [registerUser, { isLoading }] = useRegisterUserMutation();
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
     const onSubmit = async (data: RegisterFormData) => {
         console.log(data)
+        // fetch("/auth/register", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({ name: data.name, email: data.email, password: data.confirmPassword }),
+        // });
+        registerUser({ name: data.name, email: data.email, password: data.confirmPassword }).unwrap()
+            .then((data) => {
+                dispatch(setUser({ user: data?.user, accessToken: data?.token }))
+                toast.success("Log In Successfully")
+                navigate(`/`)
+            })
+            .catch((error) => {
+                toast.error(error?.data?.message)
+            })
     }
 
     return (
         <div className="h-screen flex items-center justify-center">
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="w-[500px] px-8 py-12 bg-white rounded-2xl shadow-2xl border border-gray-200">
                 <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Sign Up</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -69,10 +94,10 @@ const Register = () => {
 
                     <button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isLoading}
                         className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 cursor-pointer"
                     >
-                        {isSubmitting ? "Submitting..." : "Sign Up"}
+                        {isLoading ? "Loading..." : "Sign Up"}
                     </button>
                 </form>
 

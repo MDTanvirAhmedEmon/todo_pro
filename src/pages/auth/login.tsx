@@ -1,24 +1,41 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginSchema } from "../../zod/schema";
+import { useLogInMutation } from "../../redux/features/auth/authApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/features/auth/authSlice";
+import toast, { Toaster } from "react-hot-toast";
 type LoginFormData = z.infer<typeof loginSchema>;
 const Login: React.FC = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
     });
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [logIn, { isLoading }] = useLogInMutation();
 
     const onSubmit = async (data: LoginFormData) => {
-        console.log(data);
+        logIn({ email: data.email, password: data.password }).unwrap()
+            .then((data) => {
+                dispatch(setUser({ user: data?.user, accessToken: data?.token }))
+                toast.success("Log In Successfully")
+                navigate(`/`)
+            })
+            .catch((error) => {
+                toast.error(error?.data?.message)
+            })
+
     };
 
     return (
         <div className="h-screen flex items-center justify-center">
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="w-[500px] px-8 py-12 bg-white rounded-2xl shadow-2xl border border-gray-200">
                 <h2 className="text-3xl font-bold text-center mb-2 text-gray-900">
                     Sign In
@@ -68,10 +85,10 @@ const Login: React.FC = () => {
 
                     <button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isLoading}
                         className="w-full py-3 cursor-pointer bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition"
                     >
-                        {isSubmitting ? "Signing in..." : "Sign In"}
+                        {isLoading ? "Loading..." : "Sign In"}
                     </button>
                 </form>
 
