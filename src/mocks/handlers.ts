@@ -65,7 +65,7 @@ export const handlers = [
     const { token, expiresAt } = createToken(newUser.id);
 
     return HttpResponse.json(
-      { token, expiresAt, user: { id: newUser.id, email: newUser.email } },
+      { token, expiresAt, user: { id: newUser.id, email: newUser.email, name: newUser.name } },
       { status: 201 }
     );
   }),
@@ -76,7 +76,7 @@ export const handlers = [
     const { email, password } = requestBody;
 
     const user = users.find((u) => u.email === email && u.password === password);
-    if (!user) return HttpResponse.json({ message: "Invalid credentials" }, { status: 401 });
+    if (!user) return HttpResponse.json({ message: "Invalid credentials" }, { status: 400 });
 
     const { token, expiresAt } = createToken(user.id);
     return HttpResponse.json({ token, expiresAt, user: { id: user.id, email: user.email } });

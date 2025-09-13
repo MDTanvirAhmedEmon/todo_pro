@@ -26,7 +26,7 @@ const baseQueryWithLogoutOnError = async (
         // Log out user and clear session
         api.dispatch(setUser({ user: null, token: null }));
         toast.error("Session expired. Please log in again.")
-        window.location.href = '/auth/login';
+        window.location.href = '/login';
     }
     return result;
 };
