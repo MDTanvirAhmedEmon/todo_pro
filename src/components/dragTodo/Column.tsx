@@ -10,7 +10,7 @@ const Column = ({ id, label, todos }: { id: string; label: string; todos: ITodo[
     return (
         <div
             ref={setNodeRef}
-            className="bg-gray-50 border border-gray-200 rounded-lg p-4 min-h-[400px] shadow-sm"
+            className="bg-gray-50 border dark:bg-gray-900 dark:text-gray-100 border-gray-200 rounded-lg p-4 min-h-[400px] shadow-sm"
             >
             <h3 className="text-lg font-semibold mb-4 capitalize">{label.replace("_", " ")}</h3>
             <div className="space-y-4">

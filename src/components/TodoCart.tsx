@@ -26,24 +26,24 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
     const getPriorityColor = (priority?: ITodo["priority"]) => {
         switch (priority) {
             case "high":
-                return "text-red-600 bg-red-50 border-red-200";
+                return "text-red-600 bg-red-50 dark:bg-red-900 dark:text-red-400 border-red-200 dark:border-red-700";
             case "medium":
-                return "text-yellow-600 bg-yellow-50 border-yellow-200";
+                return "text-yellow-600 bg-yellow-50 dark:bg-yellow-900 dark:text-yellow-400 border-yellow-200 dark:border-yellow-700";
             case "low":
-                return "text-green-600 bg-green-50 border-green-200";
+                return "text-green-600 bg-green-50 dark:bg-green-900 dark:text-green-400 border-green-200 dark:border-green-700";
             default:
-                return "text-gray-600 bg-gray-100 border-gray-200";
+                return "text-gray-600 bg-gray-100 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600";
         }
     };
 
     const getStatusColor = (status: ITodo["status"]) => {
         switch (status) {
             case "done":
-                return "text-green-600 bg-green-50 border-green-200";
+                return "text-green-600 bg-green-50 dark:bg-green-900 dark:text-green-400 border-green-200 dark:border-green-700";
             case "in_progress":
-                return "text-blue-600 bg-blue-50 border-blue-200";
+                return "text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-400 border-blue-200 dark:border-blue-700";
             case "todo":
-                return "text-gray-600 bg-gray-50 border-gray-200";
+                return "text-gray-600 bg-gray-50 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600";
         }
     };
 
@@ -54,12 +54,12 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
 
     return (
         <div className="mb-8">
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-grab">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-grab">
                 <div className="flex items-start justify-between mb-2">
                     <h3
                         className={`font-medium ${todo?.status === "done"
-                            ? "line-through text-gray-500"
-                            : "text-gray-900"
+                            ? "line-through text-gray-500 dark:text-gray-400"
+                            : "text-gray-900 dark:text-gray-100"
                             }`}
                     >
                         {todo?.title}
@@ -67,32 +67,31 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                     <div className="flex items-center gap-2 ml-4">
                         <button
                             onClick={(e) => {
-                                e.stopPropagation(); // stop drag from interfering
+                                e.stopPropagation();
                                 handelEdit(todo);
                             }}
-                            className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm transition-colors"
+                            className="text-gray-600 dark:text-gray-300 cursor-pointer hover:text-gray-900 dark:hover:text-white text-sm transition-colors"
                         >
                             Edit
                         </button>
 
                         <button
                             onClick={(e) => {
-                                e.stopPropagation(); // stop drag from interfering
+                                e.stopPropagation();
                                 setShowDeleteConfirm(true);
                             }}
-                            className="text-red-600 cursor-pointer hover:text-red-700 text-sm transition-colors"
+                            className="text-red-600 dark:text-red-400 cursor-pointer hover:text-red-700 dark:hover:text-red-500 text-sm transition-colors"
                         >
                             Delete
                         </button>
                     </div>
-
                 </div>
 
                 {todo?.description && (
                     <p
                         className={`text-sm mb-3 ${todo?.status === "done"
-                            ? "line-through text-gray-500"
-                            : "text-gray-600"
+                            ? "line-through text-gray-500 dark:text-gray-400"
+                            : "text-gray-600 dark:text-gray-300"
                             }`}
                     >
                         {todo?.description?.slice(0, 45)}{todo?.description && todo.description.length > 100 ? "..." : ""}
@@ -122,7 +121,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                     )}
 
                     {todo?.dueDate && (
-                        <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+                        <span className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
                             Due: {new Date(todo?.dueDate).toLocaleDateString()}
                         </span>
                     )}
@@ -133,7 +132,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                             {todo?.tags?.map((tag: string, index: number) => (
                                 <span
                                     key={index}
-                                    className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full border border-purple-200"
+                                    className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full border border-purple-200 dark:border-purple-700"
                                 >
                                     {tag}
                                 </span>
@@ -141,7 +140,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                         </div>
                     )}
 
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
                         Created: {new Date(todo?.createdAt).toLocaleDateString()}
                         {todo?.updatedAt !== todo?.createdAt && (
                             <span className="ml-2">
@@ -151,16 +150,17 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                     </div>
                     <Link to={`/app/todos/${todo.id}`}>
                         <button
-                            className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm transition-colors mt-3"
+                            className="text-gray-600 dark:text-gray-300 cursor-pointer hover:text-gray-900 dark:hover:text-white text-sm transition-colors mt-3"
                         >
                             View Details
                         </button>
                     </Link>
                 </div>
             </div>
+
             {showDeleteConfirm &&
                 <div className="fixed inset-0 bg-black/50 flex items-start md:items-center justify-center z-50 overflow-auto py-8">
-                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mx-4 w-full max-w-lg animate-in zoom-in-95">
+                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mx-4 w-full max-w-lg animate-in zoom-in-95 transition-colors">
                         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
                             Delete Todo
                         </h3>
@@ -171,13 +171,13 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                             <button
                                 disabled={isLoading}
                                 onClick={handleDeleteTodo}
-                                className="bg-red-600 text-white px-4 py-2 cursor-pointer rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                                className="bg-red-600 text-white px-4 py-2 cursor-pointer rounded-md hover:bg-red-700 dark:hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
                             >
                                 {isLoading ? "Loading..." : "Delete"}
                             </button>
                             <button
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="bg-gray-200 dark:bg-gray-600 text-gray-900 cursor-pointer dark:text-white px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+                                className="bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-white cursor-pointer px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
                             >
                                 Cancel
                             </button>
@@ -185,8 +185,8 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                     </div>
                 </div>
             }
-            {
-                showEditForm &&
+
+            {showEditForm &&
                 <EditTodoForm setShowEditForm={setShowEditForm} selectedTodo={selectedTodo}></EditTodoForm>
             }
         </div >

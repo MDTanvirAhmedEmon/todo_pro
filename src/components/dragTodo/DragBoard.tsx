@@ -42,7 +42,7 @@ const DragBoard = ({ todos }: Props) => {
 
     return (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 ">
                 {columns.map((col) => (
                     <Column key={col} id={col} label={col} todos={todos.filter((t) => t.status === col)} />
                 ))}
