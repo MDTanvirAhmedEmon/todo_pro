@@ -3,11 +3,12 @@ import MainLayout from '../layouts/MainLayout';
 import Login from '../pages/auth/login';
 import Register from '../pages/auth/register';
 import Home from '../pages/home/Home';
+import PrivateRoute from './PrivateRoute';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <MainLayout />,
+        element: <PrivateRoute><MainLayout /></PrivateRoute>,
         children: [
             {
                 path: "/",

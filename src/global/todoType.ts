@@ -13,3 +13,14 @@ export interface ITodo {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IlogInUser {
+  logInUser: {
+    user: {
+      id: string;
+      email: string;
+      name: string;
+    };
+    accessToken: string;
+  }
+}

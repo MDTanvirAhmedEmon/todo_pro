@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/mocks/handlers.ts
 import { http, HttpResponse } from "msw";
 import { v4 as uuid } from "uuid";
 
@@ -79,7 +78,7 @@ export const handlers = [
     if (!user) return HttpResponse.json({ message: "Invalid credentials" }, { status: 400 });
 
     const { token, expiresAt } = createToken(user.id);
-    return HttpResponse.json({ token, expiresAt, user: { id: user.id, email: user.email } });
+    return HttpResponse.json({ token, expiresAt, user: { id: user.id, email: user.email, name: user.name } });
   })
   ,
 
@@ -136,7 +135,7 @@ export const handlers = [
     if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const body = req.body as Partial<Todo>;
-    if (randomFailure(0.07)) return HttpResponse.json({ message: "Failed to create todo" }, { status: 500 });
+    if (randomFailure(0.07)) return HttpResponse.json({ message: "Failed to create todo" }, { status: 400 });
 
     const newTodo: Todo = {
       id: uuid(),

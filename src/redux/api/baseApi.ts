@@ -24,7 +24,7 @@ const baseQueryWithLogoutOnError = async (
     const result = await baseQuery(args, api, extraOptions);
     if (result?.error?.status === 401) {
         // Log out user and clear session
-        api.dispatch(setUser({ user: null, token: null }));
+        api.dispatch(setUser({ user: null, accessToken: null }));
         toast.error("Session expired. Please log in again.")
         window.location.href = '/login';
     }
@@ -34,6 +34,6 @@ const baseQueryWithLogoutOnError = async (
 export const baseApi = createApi({
     reducerPath: 'baseApi',
     baseQuery: baseQueryWithLogoutOnError,
-    tagTypes: [],
+    tagTypes: ['todos'],
     endpoints: () => ({}),
 });
