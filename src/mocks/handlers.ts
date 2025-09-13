@@ -22,11 +22,28 @@ const users: User[] = [];
 const tokens: TokenInfo[] = [];
 const todos: Todo[] = [];
 
+// Helpers
+const randomFailure = (failureRate = 0.12) => Math.random() < failureRate;
+
 function createToken(userId: string, ttlMs = 1000 * 60 * 60) {
   const token = uuid();
   const expiresAt = Date.now() + ttlMs;
   tokens.push({ token, userId, expiresAt });
   return { token, expiresAt };
+}
+
+function findUserByToken(req: any) {
+  const authHeader = req.headers.get("authorization") || "";
+  if (!authHeader.startsWith("Bearer ")) return null;
+  const token = authHeader.replace("Bearer ", "");
+  const info = tokens.find((t) => t.token === token);
+  if (!info) return null;
+  if (Date.now() > info.expiresAt) {
+    const idx = tokens.findIndex((t) => t.token === token);
+    if (idx !== -1) tokens.splice(idx, 1);
+    return null;
+  }
+  return users.find((u) => u.id === info.userId) || null;
 }
 
 export const handlers = [
@@ -65,4 +82,106 @@ export const handlers = [
     return HttpResponse.json({ token, expiresAt, user: { id: user.id, email: user.email } });
   })
   ,
+
+  // GET TODOS
+  http.get("/todos", (req:any) => {
+    const user = findUserByToken(req);
+    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+    if (randomFailure(0.05)) return HttpResponse.json({ message: "Random failure" }, { status: 500 });
+
+    const search = req.url.searchParams.get("search") || "";
+    const status = req.url.searchParams.get("status") || "";
+    const sortBy = req.url.searchParams.get("sortBy") || "createdAt";
+    const order = (req.url.searchParams.get("order") || "desc").toLowerCase();
+    const page = Number(req.url.searchParams.get("page") || "1");
+    const limit = Number(req.url.searchParams.get("limit") || "10");
+
+    let list = todos.filter((t) => t.userId === user.id);
+
+    if (search) {
+      const s = search.toLowerCase();
+      list = list.filter(
+        (t) =>
+          t.title.toLowerCase().includes(s) ||
+          (t.description || "").toLowerCase().includes(s)
+      );
+    }
+
+    if (status) list = list.filter((t) => t.status === status);
+
+    list.sort((a, b) => {
+      const aVal = a[sortBy as keyof Todo] ?? "";
+      const bVal = b[sortBy as keyof Todo] ?? "";
+      if (aVal < bVal) return order === "asc" ? -1 : 1;
+      if (aVal > bVal) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    const total = list.length;
+    const start = (page - 1) * limit;
+    const paged = list.slice(start, start + limit);
+
+    return HttpResponse.json({
+      data: paged,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    });
+  }),
+
+  // CREATE TODO
+  http.post("/todos", (req:any) => {
+    const user = findUserByToken(req);
+    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    const body = req.body as Partial<Todo>;
+    if (randomFailure(0.07)) return HttpResponse.json({ message: "Failed to create todo" }, { status: 500 });
+
+    const newTodo: Todo = {
+      id: uuid(),
+      userId: user.id,
+      title: body.title || "Untitled",
+      description: body.description || "",
+      status: body.status || "todo",
+      priority: body.priority || "medium",
+      tags: body.tags || [],
+      dueDate: body.dueDate || null,
+      createdAt: new Date().toISOString(),
+    };
+
+    todos.push(newTodo);
+    return HttpResponse.json(newTodo, { status: 201 });
+  }),
+
+  // PATCH TODO
+  http.patch("/todos/:id", (req:any) => {
+    const user = findUserByToken(req);
+    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    const { id } = req.params as { id: string };
+    const body = req.body as Partial<Todo>;
+    const idx = todos.findIndex((t) => t.id === id && t.userId === user.id);
+
+    if (idx === -1) return HttpResponse.json({ message: "Not found" }, { status: 404 });
+    if (randomFailure(0.05)) return HttpResponse.json({ message: "Update failed" }, { status: 500 });
+
+    todos[idx] = { ...todos[idx], ...body, updatedAt: new Date().toISOString() };
+    return HttpResponse.json(todos[idx]);
+  }),
+
+  // DELETE TODO
+  http.delete("/todos/:id", (req) => {
+    const user = findUserByToken(req);
+    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    const { id } = req.params as { id: string };
+    const idx = todos.findIndex((t) => t.id === id && t.userId === user.id);
+
+    if (idx === -1) return HttpResponse.json({ message: "Not found" }, { status: 404 });
+    if (randomFailure(0.06)) return HttpResponse.json({ message: "Delete failed" }, { status: 500 });
+
+    todos.splice(idx, 1);
+    return HttpResponse.json({ message: "Deleted" });
+  }),
 ];

@@ -6,8 +6,6 @@ import {
 import './index.css'
 import router from './routes/routes';
 // import { worker } from "./mocks/browser";
-
-
 // // if (process.env.NODE_ENV === "development") {
 //   worker.start();
 // // }
@@ -18,7 +16,9 @@ import router from './routes/routes';
 // }
 
 import { worker } from "./mocks/browser";
-
+import { Provider } from 'react-redux';
+import { persistor, store } from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react'
 // Start MSW before rendering the app
 if (import.meta.env.DEV) {
   worker.start({
@@ -28,7 +28,11 @@ if (import.meta.env.DEV) {
 // deferRender().then(() => {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
+    </Provider>
   </StrictMode>,
 )
 // })
