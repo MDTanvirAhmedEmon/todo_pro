@@ -5,6 +5,8 @@ import { todoSchema } from "../zod/schema";
 import type { ITodo } from "../global/todoType";
 import type { Dispatch, SetStateAction } from "react";
 import { RxCross2 } from "react-icons/rx";
+import { useUpdateTodoMutation } from "../redux/features/todos/todosApi";
+import toast, { Toaster } from "react-hot-toast";
 
 type TodoFormValues = z.infer<typeof todoSchema>;
 interface EditTodoFormProps {
@@ -32,12 +34,28 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
         },
     });
 
+    const [updateTodo, { isLoading }] = useUpdateTodoMutation();
+
     const onSubmit = (data: TodoFormValues) => {
-        console.log("Form Data:", data);
-        reset();
+        const formattedData = {
+            ...data,
+            tags: data.tags
+                ? data.tags.split(",").map(tag => tag.trim()).filter(tag => tag !== "")
+                : [],
+        };
+        updateTodo({ data: formattedData, id: selectedTodo?.id }).unwrap()
+            .then(() => {
+                toast.success("Todo Updated Successfully")
+                reset();
+                setShowEditForm(false);
+            })
+            .catch((error) => {
+                toast.error(error?.data?.message)
+            })
     };
     return (
         <div className="fixed inset-0 bg-black/50 flex items-start md:items-center justify-center z-50 overflow-auto py-8">
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mx-4 w-full max-w-lg animate-in zoom-in-95">
                 <div className="text-black flex justify-end">
                     <RxCross2
@@ -183,9 +201,10 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                     <div className="flex gap-2 pt-2">
                         <button
                             type="submit"
+                            disabled={isLoading}
                             className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
                         >
-                            Create Todo
+                            {isLoading ? "Loading..." : "Update Todo"}
                         </button>
                     </div>
                 </form>

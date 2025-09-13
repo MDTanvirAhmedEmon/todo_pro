@@ -154,40 +154,40 @@ export const handlers = [
   }),
 
 
-// CREATE TODO
-http.post("/todos", async ({ request }) => {
-  // const requestBody = await request.json() as { email: string; password: string };
-  const user = findUserByToken(request);
-  if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
-
-  const body = await request.json() as Partial<Todo>;
-  // if (randomFailure(0.50)) return HttpResponse.json({ message: "Failed to create todo" }, { status: 400 });
-
-  const newTodo: Todo = {
-    id: uuid(),
-    userId: user.id,
-    title: body.title || "Untitled",
-    description: body.description || "",
-    status: body.status || "todo",
-    priority: body.priority || "medium",
-    tags: body.tags || [],
-    dueDate: body.dueDate || null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
-  todos.push(newTodo);
-  saveToStorage("mock_todos", todos);
-  return HttpResponse.json(newTodo, { status: 201 });
-}),
-
-  // PATCH TODO
-  http.patch("/todos/:id", (req: any) => {
-    const user = findUserByToken(req);
+  // CREATE TODO
+  http.post("/todos", async ({ request }) => {
+    // const requestBody = await request.json() as { email: string; password: string };
+    const user = findUserByToken(request);
     if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const { id } = req.params as { id: string };
-    const body = req.body as Partial<Todo>;
+    const body = await request.json() as Partial<Todo>;
+    // if (randomFailure(0.50)) return HttpResponse.json({ message: "Failed to create todo" }, { status: 400 });
+
+    const newTodo: Todo = {
+      id: uuid(),
+      userId: user.id,
+      title: body.title || "Untitled",
+      description: body.description || "",
+      status: body.status || "todo",
+      priority: body.priority || "medium",
+      tags: body.tags || [],
+      dueDate: body.dueDate || null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    todos.push(newTodo);
+    saveToStorage("mock_todos", todos);
+    return HttpResponse.json(newTodo, { status: 201 });
+  }),
+
+  // PATCH TODO
+  http.patch("/todos/:id",async ({ request, params }) => {
+    const user = findUserByToken(request);
+    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    const { id } = params as { id: string };
+    const body = await request.json() as Partial<Todo>;
     const idx = todos.findIndex((t) => t.id === id && t.userId === user.id);
 
     if (idx === -1) return HttpResponse.json({ message: "Not found" }, { status: 404 });
@@ -198,17 +198,20 @@ http.post("/todos", async ({ request }) => {
   }),
 
   // DELETE TODO
-  http.delete("/todos/:id", (req) => {
-    const user = findUserByToken(req);
-    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
-
-    const { id } = req.params as { id: string };
+  http.delete("/todos/:id", async ({ request, params }) => {
+    const user = findUserByToken(request);
+    if (!user) {
+      return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const { id } = params as { id: string };
     const idx = todos.findIndex((t) => t.id === id && t.userId === user.id);
 
-    if (idx === -1) return HttpResponse.json({ message: "Not found" }, { status: 404 });
-    // if (randomFailure(0.06)) return HttpResponse.json({ message: "Delete failed" }, { status: 500 });
-
+    if (idx === -1) {
+      return HttpResponse.json({ message: "Not found" }, { status: 404 });
+    }
     todos.splice(idx, 1);
+    saveToStorage("mock_todos", todos);
+
     return HttpResponse.json({ message: "Deleted" });
   }),
 ];

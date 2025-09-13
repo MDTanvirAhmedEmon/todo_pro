@@ -1,12 +1,26 @@
 import { useState } from "react";
 import type { ITodo } from "../global/todoType";
 import EditTodoForm from "./EditTodoForm";
+import { useDeleteTodoMutation } from "../redux/features/todos/todosApi";
+import toast, { Toaster } from "react-hot-toast";
 
 const TodoCart = ({ todo }: { todo: ITodo }) => {
-
     const [selectedTodo, setSelectedTodo] = useState<ITodo>()
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
     const [showEditForm, setShowEditForm] = useState(false)
+
+    const [deleteTodo, { isLoading }] = useDeleteTodoMutation()
+
+    const handleDeleteTodo = () => {
+        deleteTodo(todo?.id).unwrap()
+            .then(() => {
+                toast.success("Todo Deleted Successfully")
+                setShowDeleteConfirm(false)
+            })
+            .catch((error) => {
+                toast.error(error?.data?.message)
+            })
+    }
 
     const getPriorityColor = (priority?: ITodo["priority"]) => {
         switch (priority) {
@@ -32,7 +46,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
         }
     };
 
-    const handelEdit = (todo: ITodo) =>{
+    const handelEdit = (todo: ITodo) => {
         setSelectedTodo(todo)
         setShowEditForm(true)
     }
@@ -40,6 +54,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
     return (
         <div className="mb-8">
             <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-all">
+                <Toaster position="top-center" reverseOrder={false} />
                 <div className="flex items-start justify-between mb-2">
                     <h3
                         className={`font-medium ${todo?.status === "done"
@@ -50,7 +65,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                         {todo?.title}
                     </h3>
                     <div className="flex items-center gap-2 ml-4">
-                        <button  onClick={() => handelEdit(todo)} className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm transition-colors">
+                        <button onClick={() => handelEdit(todo)} className="text-gray-600 cursor-pointer hover:text-gray-900 text-sm transition-colors">
                             Edit
                         </button>
                         <button onClick={() => setShowDeleteConfirm(true)} className="text-red-600 cursor-pointer hover:text-red-700 text-sm transition-colors">
@@ -59,7 +74,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                     </div>
                 </div>
 
-                {todo.description && (
+                {todo?.description && (
                     <p
                         className={`text-sm mb-3 ${todo?.status === "done"
                             ? "line-through text-gray-500"
@@ -73,7 +88,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                 <div className="flex flex-wrap items-center gap-2 mb-3">
                     <div className="relative">
                         <select
-                            value={todo.status}
+                            value={todo?.status}
                             className={`text-xs px-2 py-1 rounded-full border cursor-pointer ${getStatusColor(
                                 todo.status
                             )} focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`}
@@ -84,28 +99,28 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                         </select>
                     </div>
 
-                    {todo.priority && (
+                    {todo?.priority && (
                         <span
                             className={`text-xs px-2 py-1 rounded-full border ${getPriorityColor(
-                                todo.priority
+                                todo?.priority
                             )}`}
                         >
-                            {todo.priority.charAt(0).toUpperCase() +
-                                todo.priority.slice(1)}{" "}
+                            {todo?.priority.charAt(0).toUpperCase() +
+                                todo?.priority.slice(1)}{" "}
                             Priority
                         </span>
                     )}
 
-                    {todo.dueDate && (
+                    {todo?.dueDate && (
                         <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
-                            Due: {new Date(todo.dueDate).toLocaleDateString()}
+                            Due: {new Date(todo?.dueDate).toLocaleDateString()}
                         </span>
                     )}
                 </div>
 
-                {todo.tags && todo.tags.length > 0 && (
+                {todo?.tags && todo?.tags?.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-2">
-                        {todo.tags.map((tag: string, index: number) => (
+                        {todo?.tags?.map((tag: string, index: number) => (
                             <span
                                 key={index}
                                 className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full border border-purple-200"
@@ -118,7 +133,7 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
 
                 <div className="text-xs text-gray-500">
                     Created: {new Date(todo?.createdAt).toLocaleDateString()}
-                    {todo.updatedAt !== todo?.createdAt && (
+                    {todo?.updatedAt !== todo?.createdAt && (
                         <span className="ml-2">
                             Updated: {new Date(todo?.updatedAt).toLocaleDateString()}
                         </span>
@@ -136,10 +151,11 @@ const TodoCart = ({ todo }: { todo: ITodo }) => {
                         </p>
                         <div className="flex gap-2">
                             <button
-                                onClick={() => setShowDeleteConfirm(false)}
+                                disabled={isLoading}
+                                onClick={handleDeleteTodo}
                                 className="bg-red-600 text-white px-4 py-2 cursor-pointer rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
                             >
-                                Delete
+                                {isLoading ? "Loading..." : "Delete"}
                             </button>
                             <button
                                 onClick={() => setShowDeleteConfirm(false)}
