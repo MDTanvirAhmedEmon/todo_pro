@@ -7,11 +7,11 @@ import PrivateRoute from './PrivateRoute';
 
 const router = createBrowserRouter([
     {
-        path: '/',
+        path: '/app/todos',
         element: <PrivateRoute><MainLayout /></PrivateRoute>,
         children: [
             {
-                path: "/",
+                path: "/app/todos",
                 element: <Home></Home>,
             },
         ]

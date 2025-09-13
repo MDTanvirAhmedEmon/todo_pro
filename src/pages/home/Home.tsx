@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import CreateNewTodo from "../../components/CreateNewTodo";
-import TodoCart from "../../components/TodoCart";
+// import TodoCart from "../../components/TodoCart";
 import type { ITodo } from "../../global/todoType";
 import { useGetTodoQuery } from "../../redux/features/todos/todosApi";
 import TodoCartSkeleton from "../../skeleton/TodoCartSkeleton";
+import DragBoard from "../../components/dragTodo/DragBoard";
 
 const Home = () => {
     const [search, setSearch] = useState("");
@@ -26,6 +27,7 @@ const Home = () => {
     if (priority !== "all") queryParams.priority = priority;
 
     const { data, isLoading } = useGetTodoQuery(queryParams);
+
 
     const todos: ITodo[] = data?.data || [];
 
@@ -148,20 +150,43 @@ const Home = () => {
             </section>
 
             <CreateNewTodo />
-            {
-                isLoading ?
-                    <section className="pt-8">
-                        <TodoCartSkeleton></TodoCartSkeleton>
-                        <TodoCartSkeleton></TodoCartSkeleton>
-                        <TodoCartSkeleton></TodoCartSkeleton>
-                    </section>
-                    :
-                    <section className="pt-8">
-                        {todos?.map((todo: ITodo) => (
-                            <TodoCart key={todo?.id} todo={todo} />
-                        ))}
-                    </section>
-            }
+            <section className="pt-8">
+                {isLoading ? (
+                    <div className=" w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <TodoCartSkeleton />
+                        <TodoCartSkeleton />
+                        <TodoCartSkeleton />
+                        <TodoCartSkeleton />
+                        <TodoCartSkeleton />
+                        <TodoCartSkeleton />
+                    </div>
+                ) : todos && todos.length > 0 ? (
+                    // todos.map((todo: ITodo) => <TodoCart key={todo.id} todo={todo} />) // without drag
+                     <DragBoard todos={todos} />
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-12 text-center bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <svg
+                            className="w-12 h-12 text-gray-400 mb-3"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M9 13h6m-6 4h6M9 9h.01M15 9h.01M12 6v.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                            />
+                        </svg>
+                        <h3 className="text-lg font-medium text-gray-900 mb-1">
+                            No todos yet
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-4">
+                            Start by creating your first todo to stay organized.
+                        </p>
+                    </div>
+                )}
+            </section>
 
             {/* Pagination */}
             <div className="flex justify-center items-center gap-2 mt-6 mb-10">
