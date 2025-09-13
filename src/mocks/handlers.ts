@@ -31,7 +31,7 @@ const todos: Todo[] = loadFromStorage("mock_todos", []);
 
 
 // Helpers
-const randomFailure = (failureRate = 0.60) => Math.random() < failureRate;
+// const randomFailure = (failureRate = 0.60) => Math.random() < failureRate;
 
 function createToken(userId: string, ttlMs = 1000 * 60 * 60) {
   const token = uuid();
@@ -94,17 +94,22 @@ export const handlers = [
   ,
 
   // GET TODOS
-  http.get("/todos", (req: any) => {
-    const user = findUserByToken(req);
-    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
-    // if (randomFailure(0.05)) return HttpResponse.json({ message: "Random failure" }, { status: 500 });
 
-    const search = req.url.searchParams.get("search") || "";
-    const status = req.url.searchParams.get("status") || "";
-    const sortBy = req.url.searchParams.get("sortBy") || "createdAt";
-    const order = (req.url.searchParams.get("order") || "desc").toLowerCase();
-    const page = Number(req.url.searchParams.get("page") || "1");
-    const limit = Number(req.url.searchParams.get("limit") || "10");
+  http.get("/todos", async ({ request }) => {
+    console.log(request);
+    const user = findUserByToken(request);
+    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    const url = new URL(request.url, window.location.origin);
+    console.log(url);
+
+    const search = url.searchParams.get("search") || "";
+    const status = url.searchParams.get("status") || "";
+    const priority = url.searchParams.get("priority") || "";
+    const sortBy = url.searchParams.get("sortBy") || "createdAt";
+    const order = (url.searchParams.get("order") || "desc").toLowerCase();
+    const page = Number(url.searchParams.get("page") || "1");
+    const limit = Number(url.searchParams.get("limit") || "10");
 
     let list = todos.filter((t) => t.userId === user.id);
 
@@ -117,7 +122,13 @@ export const handlers = [
       );
     }
 
-    if (status) list = list.filter((t) => t.status === status);
+    if (status) {
+      list = list.filter((t) => t.status === status);
+    }
+
+    if (priority) {
+      list = list.filter((t) => t.priority === priority);
+    }
 
     list.sort((a, b) => {
       const aVal = a[sortBy as keyof Todo] ?? "";
@@ -131,6 +142,8 @@ export const handlers = [
     const start = (page - 1) * limit;
     const paged = list.slice(start, start + limit);
 
+    saveToStorage("mock_todos", todos);
+
     return HttpResponse.json({
       data: paged,
       page,
@@ -140,32 +153,33 @@ export const handlers = [
     });
   }),
 
-  // CREATE TODO
-  http.post("/todos", async ({ request }) => {
-    // const requestBody = await request.json() as { email: string; password: string };
-    const user = findUserByToken(request);
-    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const body = await request.json() as Partial<Todo>;
-    // if (randomFailure(0.50)) return HttpResponse.json({ message: "Failed to create todo" }, { status: 400 });
+// CREATE TODO
+http.post("/todos", async ({ request }) => {
+  // const requestBody = await request.json() as { email: string; password: string };
+  const user = findUserByToken(request);
+  if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const newTodo: Todo = {
-      id: uuid(),
-      userId: user.id,
-      title: body.title || "Untitled",
-      description: body.description || "",
-      status: body.status || "todo",
-      priority: body.priority || "medium",
-      tags: body.tags || [],
-      dueDate: body.dueDate || null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+  const body = await request.json() as Partial<Todo>;
+  // if (randomFailure(0.50)) return HttpResponse.json({ message: "Failed to create todo" }, { status: 400 });
 
-    todos.push(newTodo);
-    saveToStorage("mock_todos", todos);
-    return HttpResponse.json(newTodo, { status: 201 });
-  }),
+  const newTodo: Todo = {
+    id: uuid(),
+    userId: user.id,
+    title: body.title || "Untitled",
+    description: body.description || "",
+    status: body.status || "todo",
+    priority: body.priority || "medium",
+    tags: body.tags || [],
+    dueDate: body.dueDate || null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  todos.push(newTodo);
+  saveToStorage("mock_todos", todos);
+  return HttpResponse.json(newTodo, { status: 201 });
+}),
 
   // PATCH TODO
   http.patch("/todos/:id", (req: any) => {
@@ -177,7 +191,7 @@ export const handlers = [
     const idx = todos.findIndex((t) => t.id === id && t.userId === user.id);
 
     if (idx === -1) return HttpResponse.json({ message: "Not found" }, { status: 404 });
-    if (randomFailure(0.05)) return HttpResponse.json({ message: "Update failed" }, { status: 500 });
+    // if (randomFailure(0.05)) return HttpResponse.json({ message: "Update failed" }, { status: 500 });
 
     todos[idx] = { ...todos[idx], ...body, updatedAt: new Date().toISOString() };
     return HttpResponse.json(todos[idx]);
@@ -192,7 +206,7 @@ export const handlers = [
     const idx = todos.findIndex((t) => t.id === id && t.userId === user.id);
 
     if (idx === -1) return HttpResponse.json({ message: "Not found" }, { status: 404 });
-    if (randomFailure(0.06)) return HttpResponse.json({ message: "Delete failed" }, { status: 500 });
+    // if (randomFailure(0.06)) return HttpResponse.json({ message: "Delete failed" }, { status: 500 });
 
     todos.splice(idx, 1);
     return HttpResponse.json({ message: "Deleted" });

@@ -3,9 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { setUser } from "../redux/features/auth/authSlice";
 import type { IlogInUser } from "../global/todoType";
 const MainLayout = () => {
-
     const user = useSelector((state: IlogInUser) => state.logInUser)
-    console.log(user);
     const dispatch = useDispatch();
     const navigate = useNavigate()
     const handleLogOut = () => {
