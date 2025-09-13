@@ -21,6 +21,13 @@ const todosApi = baseApi.injectEndpoints({
             providesTags: ['todos'],
         }),
 
+        getSingleTodo: builder.query({
+            query: (id) => ({
+                url: `/todos/${id}`,
+                method: 'GET',
+            }),
+        }),
+
         updateTodo: builder.mutation({
             query: ({ data, id }) => ({
                 url: `/todos/${id}`,
@@ -43,6 +50,7 @@ const todosApi = baseApi.injectEndpoints({
 export const {
     useCreateTodoMutation,
     useGetTodoQuery,
+    useGetSingleTodoQuery,
     useUpdateTodoMutation,
     useDeleteTodoMutation,
 } = todosApi;

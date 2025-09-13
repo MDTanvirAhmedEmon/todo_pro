@@ -6,7 +6,7 @@ import { loginSchema } from "../../zod/schema";
 import { useLogInMutation } from "../../redux/features/auth/authApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/features/auth/authSlice";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 type LoginFormData = z.infer<typeof loginSchema>;
 const Login: React.FC = () => {
     const {
@@ -35,7 +35,6 @@ const Login: React.FC = () => {
 
     return (
         <div className="h-screen flex items-center justify-center">
-            <Toaster position="top-center" reverseOrder={false} />
             <div className="w-[500px] px-8 py-12 bg-white rounded-2xl shadow-2xl border border-gray-200">
                 <h2 className="text-3xl font-bold text-center mb-2 text-gray-900">
                     Sign In

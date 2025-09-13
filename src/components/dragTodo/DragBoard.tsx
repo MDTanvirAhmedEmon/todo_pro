@@ -35,14 +35,14 @@ const DragBoard = ({ todos }: Props) => {
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
-                distance: 8, // user must move 8px before drag starts
+                distance: 5, // user must move 5px before drag starts
             },
         })
     );
 
     return (
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 ">
                 {columns.map((col) => (
                     <Column key={col} id={col} label={col} todos={todos.filter((t) => t.status === col)} />
                 ))}

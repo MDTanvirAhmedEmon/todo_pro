@@ -96,10 +96,10 @@ export const handlers = [
   // GET TODOS
 
   http.get("/todos", async ({ request }) => {
+
     console.log(request);
     const user = findUserByToken(request);
     if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
-
     const url = new URL(request.url, window.location.origin);
     console.log(url);
 
@@ -142,6 +142,9 @@ export const handlers = [
     const start = (page - 1) * limit;
     const paged = list.slice(start, start + limit);
 
+    const totalTodo = list.filter((t) => t.status === "todo").length;
+    const totalInProgress = list.filter((t) => t.status === "in_progress").length;
+    const totalDone = list.filter((t) => t.status === "done").length;
     saveToStorage("mock_todos", todos);
 
     return HttpResponse.json({
@@ -150,9 +153,26 @@ export const handlers = [
       limit,
       total,
       totalPages: Math.ceil(total / limit),
+      stats: {
+        todo: totalTodo,
+        in_progress: totalInProgress,
+        done: totalDone,
+      },
     });
   }),
+  
+  // GET SINGLE TODO
+  http.get("/todos/:id", async ({ request, params }) => {
+    const user = findUserByToken(request);
+    if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
 
+    const { id } = params as { id: string };
+    const todo = todos.find((t) => t.id === id && t.userId === user.id);
+
+    if (!todo) return HttpResponse.json({ message: "Todo not found" }, { status: 404 });
+
+    return HttpResponse.json(todo);
+  }),
 
   // CREATE TODO
   http.post("/todos", async ({ request }) => {
@@ -182,7 +202,7 @@ export const handlers = [
   }),
 
   // PATCH TODO
-  http.patch("/todos/:id",async ({ request, params }) => {
+  http.patch("/todos/:id", async ({ request, params }) => {
     const user = findUserByToken(request);
     if (!user) return HttpResponse.json({ message: "Unauthorized" }, { status: 401 });
 

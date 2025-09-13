@@ -6,7 +6,7 @@ import type { ITodo } from "../global/todoType";
 import type { Dispatch, SetStateAction } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useUpdateTodoMutation } from "../redux/features/todos/todosApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type TodoFormValues = z.infer<typeof todoSchema>;
 interface EditTodoFormProps {
@@ -55,9 +55,8 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
     };
     return (
         <div className="fixed inset-0 bg-black/50 flex items-start md:items-center justify-center z-50 overflow-auto py-8">
-            <Toaster position="top-center" reverseOrder={false} />
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mx-4 w-full max-w-lg animate-in zoom-in-95">
-                <div className="text-black flex justify-end">
+                <div className="text-black dark:text-white flex justify-end">
                     <RxCross2
                         size={25}
                         className="cursor-pointer"
@@ -68,7 +67,7 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                     <div>
                         <label
                             htmlFor="title"
-                            className="block text-sm font-medium text-gray-700 mb-1"
+                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
                             Title *
                         </label>
@@ -76,7 +75,7 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                             id="title"
                             type="text"
                             {...register("title")}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             placeholder="Enter todo title"
                         />
                         {errors.title && (
@@ -89,14 +88,14 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                     <div>
                         <label
                             htmlFor="description"
-                            className="block text-sm font-medium text-gray-700 mb-1"
+                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
                             Description
                         </label>
                         <textarea
                             id="description"
                             {...register("description")}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
                             placeholder="Enter todo description (optional)"
                             rows={3}
                         />
@@ -111,14 +110,14 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                         <div>
                             <label
                                 htmlFor="status"
-                                className="block text-sm font-medium text-gray-700 mb-1"
+                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                             >
                                 Status
                             </label>
                             <select
                                 id="status"
                                 {...register("status")}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             >
                                 <option value="todo">To Do</option>
                                 <option value="in_progress">In Progress</option>
@@ -134,14 +133,14 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                         <div>
                             <label
                                 htmlFor="priority"
-                                className="block text-sm font-medium text-gray-700 mb-1"
+                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                             >
                                 Priority
                             </label>
                             <select
                                 id="priority"
                                 {...register("priority")}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             >
                                 <option value="low">Low</option>
                                 <option value="medium">Medium</option>
@@ -159,7 +158,7 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                         <div>
                             <label
                                 htmlFor="tags"
-                                className="block text-sm font-medium text-gray-700 mb-1"
+                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                             >
                                 Tags
                             </label>
@@ -167,7 +166,7 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                                 id="tags"
                                 type="text"
                                 {...register("tags")}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                 placeholder="Enter tags separated by commas"
                             />
                             {errors.tags && (
@@ -180,7 +179,7 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                         <div>
                             <label
                                 htmlFor="dueDate"
-                                className="block text-sm font-medium text-gray-700 mb-1"
+                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                             >
                                 Due Date
                             </label>
@@ -188,7 +187,7 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                                 id="dueDate"
                                 type="date"
                                 {...register("dueDate")}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             />
                             {errors.dueDate && (
                                 <p className="text-red-600 text-sm mt-1">
@@ -202,7 +201,7 @@ const EditTodoForm = ({ setShowEditForm, selectedTodo }: EditTodoFormProps) => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
+                            className="bg-purple-600 cursor-pointer text-white px-4 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
                         >
                             {isLoading ? "Loading..." : "Update Todo"}
                         </button>

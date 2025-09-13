@@ -8,208 +8,216 @@ import TodoCartSkeleton from "../../skeleton/TodoCartSkeleton";
 import DragBoard from "../../components/dragTodo/DragBoard";
 
 const Home = () => {
-    const [search, setSearch] = useState("");
-    const [status, setStatus] = useState("all");
-    const [priority, setPriority] = useState("all");
-    const [sortBy, setSortBy] = useState("createdAt");
-    const [order, setOrder] = useState<"asc" | "desc">("desc");
-    const [page, setPage] = useState(1);
-    const limit = 10;
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("all");
+  const [priority, setPriority] = useState("all");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [order, setOrder] = useState<"asc" | "desc">("desc");
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
-    const queryParams: Record<string, string | number> = {
-        search,
-        sortBy,
-        order,
-        page,
-        limit,
-    };
-    if (status !== "all") queryParams.status = status;
-    if (priority !== "all") queryParams.priority = priority;
+  const queryParams: Record<string, string | number> = {
+    search,
+    sortBy,
+    order,
+    page,
+    limit,
+  };
+  if (status !== "all") queryParams.status = status;
+  if (priority !== "all") queryParams.priority = priority;
 
-    const { data, isLoading } = useGetTodoQuery(queryParams);
+  const { data, isLoading } = useGetTodoQuery(queryParams);
 
+  const todos: ITodo[] = data?.data || [];
 
-    const todos: ITodo[] = data?.data || [];
-
-    return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-            <section className="py-8" aria-labelledby="stats-heading">
-                <h2 id="stats-heading" className="sr-only">
-                    Todo Statistics
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                    <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm">
-                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">Total Todos</h3>
-                        <p className="text-xl sm:text-2xl font-bold text-purple-600">{data?.total}</p>
-                    </div>
-                    <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm">
-                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">To Do</h3>
-                        <p className="text-xl sm:text-2xl font-bold text-purple-600">
-                            {todos.filter((t) => t.status === "todo").length}
-                        </p>
-                    </div>
-                    <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm">
-                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">In Progress</h3>
-                        <p className="text-xl sm:text-2xl font-bold text-purple-600">
-                            {todos.filter((t) => t.status === "in_progress").length}
-                        </p>
-                    </div>
-                    <div className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 shadow-sm">
-                        <h3 className="text-xs sm:text-sm font-medium text-gray-500">Completed</h3>
-                        <p className="text-xl sm:text-2xl font-bold text-purple-600">
-                            {todos.filter((t) => t.status === "done").length}
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <section className="bg-white border border-gray-200 rounded-lg p-4 space-y-4 shadow-sm">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <h3 className="text-lg font-medium text-gray-900">Filter & Search</h3>
-                    <div className="text-sm text-gray-500">
-                        Showing {todos.length} of {data?.total} todos
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                    <div className="lg:col-span-2">
-                        <label htmlFor="search" className="block text-sm font-medium text-gray-900 mb-1">
-                            Search
-                        </label>
-                        <input
-                            id="search"
-                            type="text"
-                            value={search}
-                            onChange={(e) => {
-                                setPage(1);
-                                setSearch(e.target.value);
-                            }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            placeholder="Search todos..."
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="status" className="block text-sm font-medium text-gray-900 mb-1">
-                            Status
-                        </label>
-                        <select
-                            id="status"
-                            value={status}
-                            onChange={(e) => {
-                                setPage(1);
-                                setStatus(e.target.value);
-                            }}
-                            className="w-full px-3 py-2 cursor-pointer border border-gray-300 rounded-md bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        >
-                            <option value="all">All Status</option>
-                            <option value="todo">To Do</option>
-                            <option value="in_progress">In Progress</option>
-                            <option value="done">Done</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label htmlFor="priority" className="block text-sm font-medium text-gray-900 mb-1">
-                            Priority
-                        </label>
-                        <select
-                            id="priority"
-                            value={priority}
-                            onChange={(e) => {
-                                setPage(1);
-                                setPriority(e.target.value);
-                            }}
-                            className="w-full px-3 py-2 cursor-pointer border border-gray-300 rounded-md bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        >
-                            <option value="all">All Priorities</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label htmlFor="sort" className="block text-sm font-medium text-gray-900 mb-1">
-                            Sort By
-                        </label>
-                        <select
-                            id="sort"
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value)}
-                            className="w-full px-3 py-2 cursor-pointer border border-gray-300 rounded-md bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        >
-                            <option value="createdAt">Created</option>
-                            <option value="dueDate">Due Date</option>
-                            <option value="priority">Priority</option>
-                            <option value="title">Title</option>
-                        </select>
-                    </div>
-                </div>
-            </section>
-
-            <CreateNewTodo />
-            <section className="pt-8">
-                {isLoading ? (
-                    <div className=" w-full grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <TodoCartSkeleton />
-                        <TodoCartSkeleton />
-                        <TodoCartSkeleton />
-                        <TodoCartSkeleton />
-                        <TodoCartSkeleton />
-                        <TodoCartSkeleton />
-                    </div>
-                ) : todos && todos.length > 0 ? (
-                    // todos.map((todo: ITodo) => <TodoCart key={todo.id} todo={todo} />) // without drag
-                     <DragBoard todos={todos} />
-                ) : (
-                    <div className="flex flex-col items-center justify-center py-12 text-center bg-white border border-gray-200 rounded-lg shadow-sm">
-                        <svg
-                            className="w-12 h-12 text-gray-400 mb-3"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M9 13h6m-6 4h6M9 9h.01M15 9h.01M12 6v.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
-                            />
-                        </svg>
-                        <h3 className="text-lg font-medium text-gray-900 mb-1">
-                            No todos yet
-                        </h3>
-                        <p className="text-sm text-gray-500 mb-4">
-                            Start by creating your first todo to stay organized.
-                        </p>
-                    </div>
-                )}
-            </section>
-
-            {/* Pagination */}
-            <div className="flex justify-center items-center gap-2 mt-6 mb-10">
-                <button
-                    disabled={page === 1}
-                    onClick={() => setPage((p) => p - 1)}
-                    className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer "
-                >
-                    Prev
-                </button>
-                <span>
-                    Page {page} of {data?.totalPages}
-                </span>
-                <button
-                    disabled={page === data?.totalPages}
-                    onClick={() => setPage((p) => p + 1)}
-                    className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer "
-                >
-                    Next
-                </button>
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+      <section className="py-8" aria-labelledby="stats-heading">
+        <h2 id="stats-heading" className="sr-only">
+          Todo Statistics
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          {[
+            { title: "Total Todos", value: data?.total },
+            { title: "To Do", value: data?.stats?.todo },
+            { title: "In Progress", value: data?.stats?.in_progress },
+            { title: "Completed", value: data?.stats?.done },
+          ].map((stat, idx) => (
+            <div
+              key={idx}
+              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 sm:p-4 shadow-sm transition-colors"
+            >
+              <h3 className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-300">
+                {stat.title}
+              </h3>
+              <p className="text-xl sm:text-2xl font-bold text-purple-600">
+                {stat.value}
+              </p>
             </div>
+          ))}
         </div>
-    );
+      </section>
+
+      <section className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4 shadow-sm transition-colors">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+            Filter & Search
+          </h3>
+          <div className="text-sm text-gray-500 dark:text-gray-300">
+            Showing {todos.length} of {data?.total} todos
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="lg:col-span-2">
+            <label
+              htmlFor="search"
+              className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1"
+            >
+              Search
+            </label>
+            <input
+              id="search"
+              type="text"
+              value={search}
+              onChange={(e) => {
+                setPage(1);
+                setSearch(e.target.value);
+              }}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+              placeholder="Search todos..."
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="status"
+              className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1"
+            >
+              Status
+            </label>
+            <select
+              id="status"
+              value={status}
+              onChange={(e) => {
+                setPage(1);
+                setStatus(e.target.value);
+              }}
+              className="w-full px-3 py-2 cursor-pointer border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+            >
+              <option value="all">All Status</option>
+              <option value="todo">To Do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="priority"
+              className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1"
+            >
+              Priority
+            </label>
+            <select
+              id="priority"
+              value={priority}
+              onChange={(e) => {
+                setPage(1);
+                setPriority(e.target.value);
+              }}
+              className="w-full px-3 py-2 cursor-pointer border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+            >
+              <option value="all">All Priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="sort"
+              className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1"
+            >
+              Sort By
+            </label>
+            <select
+              id="sort"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full px-3 py-2 cursor-pointer border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+            >
+              <option value="createdAt">Created</option>
+              <option value="dueDate">Due Date</option>
+              <option value="priority">Priority</option>
+              <option value="title">Title</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <CreateNewTodo />
+
+      <section className="pt-8">
+        {isLoading ? (
+          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+            <TodoCartSkeleton />
+            <TodoCartSkeleton />
+            <TodoCartSkeleton />
+            <TodoCartSkeleton />
+            <TodoCartSkeleton />
+            <TodoCartSkeleton />
+          </div>
+        ) : todos && todos.length > 0 ? (
+          <DragBoard todos={todos} />
+        ) : (
+          <div className="flex flex-col items-center justify-center py-12 text-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm transition-colors">
+            <svg
+              className="w-12 h-12 text-gray-400 dark:text-gray-300 mb-3"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 13h6m-6 4h6M9 9h.01M15 9h.01M12 6v.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+              />
+            </svg>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">
+              No todos yet
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">
+              Start by creating your first todo to stay organized.
+            </p>
+          </div>
+        )}
+      </section>
+
+      {/* Pagination */}
+      <div className="flex justify-center items-center gap-2 mt-6 pb-10">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage((p) => p - 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer dark:border-gray-600"
+        >
+          Prev
+        </button>
+        <span className="dark:text-gray-200">
+          Page {page} of {data?.totalPages}
+        </span>
+        <button
+          disabled={page === data?.totalPages}
+          onClick={() => setPage((p) => p + 1)}
+          className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer dark:border-gray-600"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default Home;
