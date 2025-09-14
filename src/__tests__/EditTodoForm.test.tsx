@@ -1,4 +1,3 @@
-// EditTodoForm.test.tsx
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Provider } from "react-redux";
@@ -6,7 +5,6 @@ import { store } from "../redux/store";
 import EditTodoForm from "../components/EditTodoForm";
 import type { ITodo } from "../global/todoType";
 
-// Mock react-hot-toast with default export
 vi.mock("react-hot-toast", () => ({
   default: {
     success: vi.fn(),
@@ -14,7 +12,6 @@ vi.mock("react-hot-toast", () => ({
   },
 }));
 
-// Mock updateTodo mutation
 const mockUpdateTodo = vi.fn(() => ({
   unwrap: () => Promise.resolve(),
 }));
@@ -22,7 +19,6 @@ vi.mock("../redux/features/todos/todosApi", () => ({
   useUpdateTodoMutation: () => [mockUpdateTodo, { isLoading: false }],
 }));
 
-// Mock selected todo aligned with ITodo type
 const selectedTodo: ITodo = {
   id: "1",
   userId: "user1",
@@ -57,11 +53,10 @@ describe("EditTodoForm", () => {
 
     expect(screen.getByDisplayValue("Test Todo")).toBeInTheDocument();
     expect(screen.getByDisplayValue("This is a test")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("To Do")).toBeInTheDocument(); // select text
-    expect(screen.getByDisplayValue("Medium")).toBeInTheDocument(); // select text
+    expect(screen.getByDisplayValue("To Do")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Medium")).toBeInTheDocument();
     expect(screen.getByDisplayValue("tag1,tag2")).toBeInTheDocument();
 
-    // Due date should be displayed in YYYY-MM-DD format
     const dueDateInput = screen.getByLabelText(/due date/i) as HTMLInputElement;
     expect(dueDateInput.value).toBe(selectedTodo.dueDate!.split("T")[0]);
   });
@@ -84,7 +79,7 @@ describe("EditTodoForm", () => {
           status: selectedTodo.status,
           priority: selectedTodo.priority,
           tags: selectedTodo.tags,
-          dueDate: selectedTodo.dueDate!.split("T")[0], // match form input value
+          dueDate: selectedTodo.dueDate!.split("T")[0],
         },
       });
     });
