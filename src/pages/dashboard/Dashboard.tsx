@@ -12,9 +12,9 @@ const Dashboard = () => {
   const [status, setStatus] = useState("all");
   const [priority, setPriority] = useState("all");
   const [sortBy, setSortBy] = useState("createdAt");
-  const [order, setOrder] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
   const limit = 10;
+  const order: string = "desc"
 
   const queryParams: Record<string, string | number> = {
     search,
