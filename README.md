@@ -1,0 +1,152 @@
+# Project Name
+
+> Short project description: what it does, the purpose, and main functionality.
+
+---
+
+## Table of Contents
+
+* [Project Overview](#project-overview)
+* [Tech Stack](#tech-stack)
+* [Architecture](#architecture)
+* [Setup Instructions](#setup-instructions)
+* [Features](#features)
+* [Trade-offs & Design Decisions](#trade-offs--design-decisions)
+* [Testing](#testing)
+* [Future Improvements](#future-improvements)
+* [License](#license)
+
+---
+
+## Project Overview
+
+This project is a **web application** that allows users to register, log in, and manage tasks in a personal dashboard. It includes real-time notifications, responsive UI, and secure authentication.
+
+---
+
+## Tech Stack
+
+* **Frontend:** React.js, TypeScript, Tailwind CSS, React Router, React Hook Form
+* **Mock Backend:** MSW
+* **Mock Database:** LocalStorage
+* **State Management:** Redux Toolkit + RTK Query
+* **Testing:** Vitest, React Testing Library, MSW
+* **Validation:** Zod
+* **Other Tools:** React Hot Toast
+
+---
+
+## Architecture
+
+* **Folder Structure Example:**
+
+```
+src/
+ ├─ components/        # Reusable UI components
+ ├─ pages/             # Page-level components (Register, Login, Dashboard)
+ ├─ redux/             # Redux slices & store
+ ├─ hooks/             # Custom React hooks
+ ├─ routes/            # React Router setup
+ ├─ layouts/           # Route layouts
+ ├─ utils/             # Utility functions
+ ├─ mocks/             # MSW mock API handlers
+ ├─ skeletons/         # Skeleton UI components
+ ├─ zod/              # Zod validation schemas
+ ├─ global/           # TypeScript global types
+ └─ __tests__/         # Unit and integration tests
+```
+
+* **Data Flow:**
+
+  1. Components use **React Hook Form** for form handling.
+  2. API requests are handled via **RTK Query**, integrating with Redux.
+  3. Responses are stored in the Redux store for global access.
+  4. UI feedback is provided via **React Hot Toast**.
+
+* **Routing:** Public vs. Private routes are managed with React Router and `layouts` for structured layouts.
+
+---
+
+## Setup Instructions
+
+1. **Clone the repository:**
+
+```bash
+git clone https://github.com/username/project-name.git
+cd project-name
+```
+
+2. **Install dependencies:**
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. **Create environment variables:**
+   Create a `.env` file in the root and add required variables:
+
+```
+REACT_APP_API_URL=http://localhost:5000
+```
+
+4. **Run the app:**
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+5. **Run tests:**
+
+```bash
+npm run test
+# or
+yarn test
+```
+
+---
+
+## Features
+
+* User registration & login
+* Form validation (Zod + React Hook Form)
+* Password confirmation check
+* Real-time feedback using toast notifications
+* Responsive design (Tailwind CSS)
+* Redux state management and RTK Query for API calls
+* Skeleton loading components for better UX
+* Unit and integration tests with MSW for mocking API
+
+---
+
+## Trade-offs & Design Decisions
+
+* **Password storage:** Used confirmPassword in the frontend for validation; backend stores hashed password.
+* **RTK Query vs Axios:** Chose RTK Query for Redux integration and cache management.
+* **Form Handling:** React Hook Form + Zod for type-safe validation.
+* **Testing:** Vitest and MSW chosen for fast, reliable tests in the Vite environment.
+* **UI Framework:** Tailwind CSS selected for rapid styling and responsive design.
+
+**Trade-offs:**
+
+* Did not implement SSR to simplify scope.
+* Minimal animations for performance optimization.
+* API error handling uses toast notifications; inline errors are minimal.
+
+---
+
+## Testing
+
+* Unit tests cover:
+
+  * Form validation
+  * API integration with RTK Query (mocked using MSW)
+  * Toast notifications
+* Run tests:
+
+```bash
+npm run test
+```
