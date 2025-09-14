@@ -76,27 +76,12 @@ npm install
 yarn install
 ```
 
-3. **Create environment variables:**
-   Create a `.env` file in the root and add required variables:
-
-```
-REACT_APP_API_URL=http://localhost:5000
-```
-
-4. **Run the app:**
+3. **Run the app:**
 
 ```bash
 npm run dev
 # or
 yarn dev
-```
-
-5. **Run tests:**
-
-```bash
-npm run test
-# or
-yarn test
 ```
 
 ---
