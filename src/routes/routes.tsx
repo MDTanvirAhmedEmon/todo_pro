@@ -2,33 +2,42 @@ import { createBrowserRouter } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import Login from '../pages/auth/login';
 import Register from '../pages/auth/register';
-import Home from '../pages/home/Home';
 import PrivateRoute from './PrivateRoute';
 import SingleTodo from '../pages/singleTodo/SingleTodo';
+import Dashboard from '../pages/dashboard/Dashboard';
+import Home from '../pages/home/Home';
 
 const router = createBrowserRouter([
     {
-        path: '/app/todos',
-        element: <PrivateRoute><MainLayout /></PrivateRoute>,
+        path: '/',
+        element: <MainLayout />,
         children: [
             {
-                path: "/app/todos",
-                element: <Home></Home>,
+                path: '/',
+                element: <Home />,
             },
             {
-                path: "/app/todos/:id",
-                element: <SingleTodo></SingleTodo>,
+                path: '/app/todos',
+                element: (
+                    <PrivateRoute><Dashboard /></PrivateRoute>
+                ),
             },
-        ]
+            {
+                path: '/app/todos/:id',
+                element: (
+                    <PrivateRoute><SingleTodo /></PrivateRoute>
+                ),
+            },
+            {
+                path: '/login',
+                element: <Login />,
+            },
+            {
+                path: '/register',
+                element: <Register />,
+            },
+        ],
     },
-    {
-        path: '/login',
-        element: <Login></Login>
-    },
-    {
-        path: '/register',
-        element: <Register></Register>
-    }
 
 ]);
 
