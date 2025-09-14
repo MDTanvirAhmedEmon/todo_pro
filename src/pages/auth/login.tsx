@@ -7,7 +7,9 @@ import { useLogInMutation } from "../../redux/features/auth/authApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/features/auth/authSlice";
 import toast from "react-hot-toast";
+
 type LoginFormData = z.infer<typeof loginSchema>;
+
 const Login: React.FC = () => {
     const {
         register,
@@ -16,30 +18,30 @@ const Login: React.FC = () => {
     } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
     });
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [logIn, { isLoading }] = useLogInMutation();
 
     const onSubmit = async (data: LoginFormData) => {
-        logIn({ email: data.email, password: data.password }).unwrap()
+        logIn({ email: data.email, password: data.password })
+            .unwrap()
             .then((data) => {
-                dispatch(setUser({ user: data?.user, accessToken: data?.token }))
-                toast.success("Log In Successfully")
-                navigate(`/app/todos`)
+                dispatch(setUser({ user: data?.user, accessToken: data?.token }));
+                toast.success("Log In Successfully");
+                navigate(`/app/todos`);
             })
             .catch((error) => {
-                toast.error(error?.data?.message)
-            })
-
+                toast.error(error?.data?.message);
+            });
     };
 
     return (
-        <div className="h-screen flex items-center justify-center">
-            <div className="w-[500px] px-8 py-12 bg-white rounded-2xl shadow-2xl border border-gray-200">
-                <h2 className="text-3xl font-bold text-center mb-2 text-gray-900">
+        <div className="h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+            <div className="w-[500px] px-8 py-12 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+                <h2 className="text-3xl font-bold text-center mb-2 text-gray-900 dark:text-gray-100">
                     Sign In
                 </h2>
-                <p className="text-sm text-center text-gray-500 mb-8">
+                <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-8">
                     Enter your email and password to continue
                 </p>
 
@@ -47,7 +49,7 @@ const Login: React.FC = () => {
                     <div>
                         <label
                             htmlFor="email"
-                            className="block text-sm font-medium text-gray-700 mb-1"
+                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
                             Email
                         </label>
@@ -55,7 +57,7 @@ const Login: React.FC = () => {
                             id="email"
                             type="email"
                             {...register("email")}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             placeholder="you@example.com"
                         />
                         {errors.email && (
@@ -66,7 +68,7 @@ const Login: React.FC = () => {
                     <div>
                         <label
                             htmlFor="password"
-                            className="block text-sm font-medium text-gray-700 mb-1"
+                            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                         >
                             Password
                         </label>
@@ -74,7 +76,7 @@ const Login: React.FC = () => {
                             id="password"
                             type="password"
                             {...register("password")}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             placeholder="••••••••"
                         />
                         {errors.password && (
@@ -92,7 +94,7 @@ const Login: React.FC = () => {
                 </form>
 
                 <div className="mt-6 text-center">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                         Don’t have an account?{" "}
                         <Link to="/register">
                             <button className="text-purple-600 hover:underline font-medium cursor-pointer">
