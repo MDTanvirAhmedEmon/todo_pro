@@ -1,6 +1,6 @@
-# Project Name
+# Todo Pro
 
-> Short project description: what it does, the purpose, and main functionality.
+> Todo Pro is a single-page application (SPA) for user registration, login, and todo management. It supports authentication with token persistence, CRUD operations, filtering, sorting, and pagination. The app includes dark mode, skeletons, toast notifications, and is fully responsive. Built with React, TypeScript, Redux Toolkit, React Router, React Hook Form, Zod, Tailwind CSS, and MSW for a mock API, the code is type-safe and easily swappable with a real backend.
 
 ---
 
@@ -13,14 +13,6 @@
 * [Features](#features)
 * [Trade-offs & Design Decisions](#trade-offs--design-decisions)
 * [Testing](#testing)
-* [Future Improvements](#future-improvements)
-* [License](#license)
-
----
-
-## Project Overview
-
-This project is a **web application** that allows users to register, log in, and manage tasks in a personal dashboard. It includes real-time notifications, responsive UI, and secure authentication.
 
 ---
 
