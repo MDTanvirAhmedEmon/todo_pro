@@ -26,7 +26,7 @@ const Home = () => {
                             to="/login"
                             className="border border-purple-600 text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 w-full sm:w-auto"
                         >
-                            Sign In
+                            Log In
                         </Link>
                     </div>
 
